@@ -1,0 +1,7 @@
+env: "local" # dev, prod, local
+storage-path: "./storage/storage.db"
+http: 
+  host: "localhost"
+  port: 8087
+  timeout: 4s
+  idle-timeout: 30s
