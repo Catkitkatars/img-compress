@@ -2,6 +2,7 @@ package main
 
 import (
 	"img-compress/internal/config"
+	s "img-compress/internal/http-server"
 	"img-compress/internal/lib/logger/slog"
 	"img-compress/internal/storage/sqlite"
 	"log/slog"
@@ -24,9 +25,5 @@ func main() {
 
 	_ = storage
 
-	// TODO
-	// config - cleanenv
-	// logger - slog
-	// storage - sqlite
-	// router - chi
+	s.HttpStart(cfg, log)
 }
