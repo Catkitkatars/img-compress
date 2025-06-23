@@ -8,23 +8,17 @@ import (
 	"os"
 )
 
-const (
-	envLocal = "local"
-	envDev   = "dev"
-	envProd  = "prod"
-)
-
 func main() {
-	var cfg = config.Init()
+	cfg := config.Init()
 
-	log := initLogger(cfg.Env)
+	log := sl.New(cfg.Env)
 
 	log.Info("starting img-compress", slog.String("env", cfg.Env))
 
 	storage, err := sqlite.New(cfg.StoragePath)
 
 	if err != nil {
-		log.Error("failed to initialize storage", sl.Error(err))
+		log.Error("failed to initialize storage", err)
 		os.Exit(1)
 	}
 
@@ -35,24 +29,4 @@ func main() {
 	// logger - slog
 	// storage - sqlite
 	// router - chi
-}
-
-func initLogger(env string) *slog.Logger {
-	var log *slog.Logger
-
-	switch env {
-	case envLocal:
-		log = slog.New(
-			slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
-	case envDev:
-		log = slog.New(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}),
-		)
-	case envProd:
-		log = slog.New(
-			slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}),
-		)
-	}
-	return log
 }
