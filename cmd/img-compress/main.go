@@ -2,7 +2,7 @@ package main
 
 import (
 	"img-compress/internal/config"
-	srv "img-compress/internal/http-server"
+	srv "img-compress/internal/http"
 	"img-compress/internal/lib/logger/slog"
 	"img-compress/internal/storage/sqlite"
 	"log/slog"
@@ -23,5 +23,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	srv.HttpStart(cfg, log)
+	srvErr := srv.Start(cfg)
+
+	if srvErr != nil {
+		log.Error("failed to start server", err)
+		log.Error("server stopped", nil)
+		os.Exit(1)
+	}
 }

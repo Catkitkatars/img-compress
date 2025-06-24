@@ -3,7 +3,6 @@ package router
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	r "img-compress/internal/http-server/router/routes"
 )
 
 const (
@@ -19,7 +18,7 @@ func Init() *chi.Mux {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	for _, route := range r.Routes {
+	for _, route := range Routes {
 
 		switch route.Method {
 		case get:
