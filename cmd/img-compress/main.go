@@ -3,7 +3,7 @@ package main
 import (
 	"img-compress/internal/config"
 	srv "img-compress/internal/http"
-	"img-compress/internal/storage/sqlite"
+	"img-compress/internal/storage"
 	"log/slog"
 	"os"
 )
@@ -32,7 +32,7 @@ func main() {
 
 	log.Info("starting img-compress", slog.String("env", cfg.Env))
 
-	_, err := sqlite.New(cfg.StoragePath)
+	_, err := storage.New(cfg.StoragePath)
 
 	if err != nil {
 		log.Error("failed to initialize storage", err)
