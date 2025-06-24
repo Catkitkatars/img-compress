@@ -1,7 +1,7 @@
 package router
 
 import (
-	chi "github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	r "img-compress/internal/http-server/router/routes"
 )
@@ -23,7 +23,6 @@ func Init() *chi.Mux {
 
 		switch route.Method {
 		case get:
-
 			router.Get(route.Path, route.Handler)
 		case post:
 			router.Post(route.Path, route.Handler)
