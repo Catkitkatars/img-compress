@@ -1,30 +1,22 @@
-FROM alpine:3.22
-
-RUN apk update && apk add --no-cache \
-    go \
-    nginx \
-    sqlite \
-    supervisor \
-    bash
-
-WORKDIR /app
-
+FROM golang:1.24 AS build
+WORKDIR /src
 COPY . .
+RUN --mount=type=ssh --mount=type=cache,target="/go/pkg/mod" \
+    go mod download
+RUN --mount=type=cache,target="/root/.cache/go-build" \
+    --mount=type=cache,target="/go/pkg/mod" \
+    CGO_ENABLED=1 go build -o img-compress cmd/img-compress/main.go
 
-WORKDIR /app/cmd/img-compress
-RUN go mod init img-compress
-RUN go mod tidy
+FROM ubuntu:22.04
+WORKDIR /img-compress
+RUN apt-get update && apt-get install -y \
+    libsqlite3-0 && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN go build -o /app/img-compress
+RUN mkdir -p /img-compress/storage
 
-WORKDIR /app
-
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY docker/conf.d/ /etc/nginx/conf.d/
-COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN chmod +x /app/img-compress
+COPY --from=build /src/img-compress /img-compress/img-compress
+COPY --from=build /src/config/local.yaml /img-compress/config/local.yaml
 
 EXPOSE 8080
-
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+ENTRYPOINT ["./img-compress"]
