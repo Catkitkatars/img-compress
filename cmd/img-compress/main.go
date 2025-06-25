@@ -1,7 +1,10 @@
 package main
 
 import (
+	"img-compress/internal/app"
 	"img-compress/internal/config"
+	"img-compress/internal/dto"
+	"img-compress/internal/handler"
 	srv "img-compress/internal/http"
 	"img-compress/internal/storage"
 	"log/slog"
@@ -17,29 +20,40 @@ const (
 func main() {
 	cfg := config.Init()
 
-	var handler slog.Handler
+	var slogHandler slog.Handler
 
 	switch cfg.Env {
 	case EnvLocal:
-		handler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
+		slogHandler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
 	case EnvDev:
-		handler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
+		slogHandler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
 	case EnvProd:
-		handler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})
+		slogHandler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})
 	}
 
-	log := slog.New(handler)
+	log := slog.New(slogHandler)
 
 	log.Info("starting img-compress", slog.String("env", cfg.Env))
 
-	_, err := storage.New(cfg.StoragePath)
+	store, err := storage.New(cfg.StoragePath)
 
 	if err != nil {
 		log.Error("failed to initialize storage", err)
 		os.Exit(1)
 	}
 
-	srvErr := srv.Start(cfg)
+	ImageAppDto := dto.ImageApp{
+		Cfg:     cfg,
+		Storage: store,
+		Log:     log,
+	}
+
+	//todo add app dto with ImageAppDto, ImageHandlerDto, etc.
+
+	imageApp := app.NewImage(ImageAppDto)
+	imageHandler := handler.NewImageHandler(imageApp, ImageAppDto)
+
+	srvErr := srv.Start(cfg, imageHandler)
 
 	if srvErr != nil {
 		log.Error("failed to start server", err)

@@ -1,6 +1,9 @@
 package router
 
-import "net/http"
+import (
+	"img-compress/internal/handler"
+	"net/http"
+)
 
 type Route struct {
 	Method  string
@@ -8,19 +11,17 @@ type Route struct {
 	Handler func(http.ResponseWriter, *http.Request)
 }
 
-var Routes = []Route{
-	{
-		Method: "GET",
-		Path:   "/img",
-		Handler: func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("GET /img called"))
+func GetRoutes(imageHandler *handler.ImageHandler) []Route {
+	return []Route{
+		{
+			Method:  "GET",
+			Path:    "/img/{id}",
+			Handler: imageHandler.GetImage(),
 		},
-	},
-	{
-		Method: "POST",
-		Path:   "/img",
-		Handler: func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("POST /img called"))
+		{
+			Method:  "POST",
+			Path:    "/img",
+			Handler: imageHandler.AddImage(),
 		},
-	},
+	}
 }
