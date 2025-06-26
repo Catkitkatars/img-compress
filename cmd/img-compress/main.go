@@ -7,6 +7,8 @@ import (
 	"img-compress/internal/handler"
 	srv "img-compress/internal/http"
 	"img-compress/internal/storage"
+	"io"
+	"log"
 	"log/slog"
 	"os"
 )
@@ -20,44 +22,48 @@ const (
 func main() {
 	cfg := config.Init()
 
+	logFile, err := os.OpenFile(cfg.LogPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("не удалось открыть лог-файл: %v", err)
+	}
+
+	logWriter := io.MultiWriter(os.Stdout, logFile)
 	var slogHandler slog.Handler
 
 	switch cfg.Env {
 	case EnvLocal:
-		slogHandler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
+		slogHandler = slog.NewTextHandler(logWriter, &slog.HandlerOptions{Level: slog.LevelDebug})
 	case EnvDev:
-		slogHandler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug})
+		slogHandler = slog.NewJSONHandler(logWriter, &slog.HandlerOptions{Level: slog.LevelDebug})
 	case EnvProd:
-		slogHandler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo})
+		slogHandler = slog.NewJSONHandler(logWriter, &slog.HandlerOptions{Level: slog.LevelInfo})
 	}
 
-	log := slog.New(slogHandler)
+	logger := slog.New(slogHandler)
 
-	log.Info("starting img-compress", slog.String("env", cfg.Env))
+	logger.Info("starting img-compress", slog.String("env", cfg.Env))
 
 	store, err := storage.New(cfg.StoragePath)
 
 	if err != nil {
-		log.Error("failed to initialize storage", err)
+		logger.Error("failed to initialize storage", err)
 		os.Exit(1)
 	}
 
-	ImageAppDto := dto.ImageApp{
+	configDto := &dto.Config{
 		Cfg:     cfg,
 		Storage: store,
-		Log:     log,
+		Log:     logger,
 	}
 
-	//todo add app dto with ImageAppDto, ImageHandlerDto, etc.
+	imageApp := app.NewImage(configDto)
+	imageHandler := handler.NewImageHandler(configDto.Log, imageApp)
 
-	imageApp := app.NewImage(ImageAppDto)
-	imageHandler := handler.NewImageHandler(imageApp, ImageAppDto)
-
-	srvErr := srv.Start(cfg, imageHandler)
+	srvErr := srv.Start(configDto, imageHandler)
 
 	if srvErr != nil {
-		log.Error("failed to start server", err)
-		log.Error("server stopped", nil)
+		logger.Error("failed to start server", err)
+		logger.Error("server stopped", nil)
 		os.Exit(1)
 	}
 }

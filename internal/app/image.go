@@ -11,7 +11,7 @@ type Image struct {
 	log *slog.Logger
 }
 
-func NewImage(imgAppDto *dto.ImageApp) *Image {
+func NewImage(imgAppDto *dto.Config) *Image {
 	return &Image{st: imgAppDto.Storage, log: imgAppDto.Log}
 }
 

@@ -1,0 +1,4 @@
+time=2025-06-26T06:11:09.366Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T06:12:29.988Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T06:16:10.933Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T06:16:15.123Z level=ERROR msg=app.Image.GetImage "failed to get image"="id=123" error="image with id 123 not found"

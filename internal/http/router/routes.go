@@ -11,17 +11,17 @@ type Route struct {
 	Handler func(http.ResponseWriter, *http.Request)
 }
 
-func GetRoutes(imageHandler *handler.ImageHandler) []Route {
+func GetRoutes(imgHandler *handler.ImageHandler) []Route {
 	return []Route{
 		{
 			Method:  "GET",
 			Path:    "/img/{id}",
-			Handler: imageHandler.GetImage(),
+			Handler: imgHandler.GetImage,
 		},
 		{
 			Method:  "POST",
 			Path:    "/img",
-			Handler: imageHandler.AddImage(),
+			Handler: imgHandler.AddImages,
 		},
 	}
 }

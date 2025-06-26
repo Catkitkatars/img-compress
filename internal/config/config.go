@@ -15,6 +15,7 @@ const (
 type Config struct {
 	Env         string `yaml:"env" env-required:"true"`
 	StoragePath string `yaml:"storage-path" env-required:"true"`
+	LogPath     string `yaml:"log-path" env-required:"true"`
 	HTTP        HTTP   `yaml:"http"`
 }
 
