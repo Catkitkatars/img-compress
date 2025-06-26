@@ -2,3 +2,82 @@ time=2025-06-26T06:11:09.366Z level=INFO msg="starting img-compress" env=local
 time=2025-06-26T06:12:29.988Z level=INFO msg="starting img-compress" env=local
 time=2025-06-26T06:16:10.933Z level=INFO msg="starting img-compress" env=local
 time=2025-06-26T06:16:15.123Z level=ERROR msg=app.Image.GetImage "failed to get image"="id=123" error="image with id 123 not found"
+time=2025-06-26T07:04:52.677Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T07:27:49.823Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T07:28:21.524Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T07:31:14.702Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T10:42:22.586Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T10:43:10.797Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T10:44:30.070Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T10:46:26.716Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T11:02:54.035Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T11:03:41.726Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T11:04:23.843Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T11:06:06.376Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T11:07:40.057Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T11:08:45.548Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:13:55.155Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:16:18.514Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:18:46.661Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:18:57.821Z level=INFO msg="file is opened"
+time=2025-06-26T12:18:57.859Z level=INFO msg="decoded is done"
+time=2025-06-26T12:18:57.864Z level=INFO msg="bg is done"
+time=2025-06-26T12:20:04.020Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:20:07.901Z level=INFO msg="file is opened"
+time=2025-06-26T12:20:07.940Z level=INFO msg="decoded is done"
+time=2025-06-26T12:20:07.945Z level=INFO msg="bg is done"
+time=2025-06-26T12:23:42.885Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:23:52.027Z level=INFO msg="file is opened"
+time=2025-06-26T12:23:52.062Z level=INFO msg="decoded is done"
+time=2025-06-26T12:23:52.066Z level=INFO msg="bg is done"
+time=2025-06-26T12:23:52.066Z level=INFO msg="AddWaterMark start"
+time=2025-06-26T12:23:52.067Z level=INFO msg="wm is opened"
+time=2025-06-26T12:26:05.280Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:26:22.652Z level=INFO msg="file is opened"
+time=2025-06-26T12:26:22.694Z level=INFO msg="decoded is done"
+time=2025-06-26T12:26:22.702Z level=INFO msg="bg is done"
+time=2025-06-26T12:26:22.702Z level=INFO msg="AddWaterMark start"
+time=2025-06-26T12:26:22.703Z level=INFO msg="wm is opened"
+time=2025-06-26T12:26:22.703Z level=ERROR msg=app.Image.AddWaterMark "failed to open watermark image"="wmPath=assets/img/watermark.png" error="open assets/img/watermark.png: no such file or directory"
+time=2025-06-26T12:26:22.703Z level=INFO msg="wm is done"
+time=2025-06-26T12:27:05.383Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:27:08.724Z level=INFO msg="file is opened"
+time=2025-06-26T12:27:08.759Z level=INFO msg="decoded is done"
+time=2025-06-26T12:27:08.765Z level=INFO msg="bg is done"
+time=2025-06-26T12:27:08.765Z level=INFO msg="AddWaterMark start"
+time=2025-06-26T12:27:08.788Z level=INFO msg="wm is opened"
+time=2025-06-26T12:27:08.805Z level=INFO msg="resize is done"
+time=2025-06-26T12:27:08.808Z level=INFO msg="wm is done"
+time=2025-06-26T12:27:08.808Z level=INFO msg="outFile is created"
+time=2025-06-26T12:27:08.827Z level=INFO msg="img is saved"
+time=2025-06-26T12:30:38.505Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:32:12.616Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:33:04.683Z level=INFO msg="AddWaterMark start"
+time=2025-06-26T12:33:04.707Z level=INFO msg="wm is opened"
+time=2025-06-26T12:33:04.725Z level=INFO msg="resize is done"
+time=2025-06-26T12:33:26.165Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T12:33:28.932Z level=INFO msg="AddWaterMark start"
+time=2025-06-26T12:33:28.961Z level=INFO msg="wm is opened"
+time=2025-06-26T12:33:28.979Z level=INFO msg="resize is done"
+time=2025-06-26T13:42:53.115Z level=INFO msg="AddWaterMark start"
+time=2025-06-26T13:42:53.143Z level=INFO msg="wm is opened"
+time=2025-06-26T13:42:53.163Z level=INFO msg="resize is done"
+time=2025-06-26T13:43:15.491Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:44:46.848Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:45:38.400Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:46:03.256Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:46:12.189Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:46:41.901Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:47:31.331Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:50:50.288Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:51:55.941Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:53:00.225Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:54:51.126Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T13:55:05.706Z level=INFO msg="AddWaterMark start"
+time=2025-06-26T13:55:05.731Z level=INFO msg="wm is opened"
+time=2025-06-26T13:55:05.750Z level=INFO msg="resize is done"
+time=2025-06-26T13:55:05.815Z level=INFO msg="AddWaterMark start"
+time=2025-06-26T13:55:05.833Z level=INFO msg="wm is opened"
+time=2025-06-26T13:55:05.851Z level=INFO msg="resize is done"
+time=2025-06-26T14:20:20.567Z level=INFO msg="starting img-compress" env=local
+time=2025-06-26T14:40:32.263Z level=INFO msg="starting img-compress" env=local

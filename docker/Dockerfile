@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN mkdir -p /img-compress/storage
 RUN mkdir -p /img-compress/logs
+RUN mkdir -p /img-compress/assets/img
 
 COPY --from=build /src/img-compress /img-compress/img-compress
 COPY --from=build /src/config/local.yaml /img-compress/config/local.yaml

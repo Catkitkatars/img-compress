@@ -43,7 +43,7 @@ func main() {
 
 	logger.Info("starting img-compress", slog.String("env", cfg.Env))
 
-	store, err := storage.New(cfg.StoragePath)
+	store, err := storage.New(cfg.StoragePath, logger)
 
 	if err != nil {
 		logger.Error("failed to initialize storage", err)
@@ -57,7 +57,7 @@ func main() {
 	}
 
 	imageApp := app.NewImage(configDto)
-	imageHandler := handler.NewImageHandler(configDto.Log, imageApp)
+	imageHandler := handler.NewImageHandler(configDto, imageApp)
 
 	srvErr := srv.Start(configDto, imageHandler)
 

@@ -1,6 +1,11 @@
 env: "local" # dev, prod, local
 storage-path: "./storage/storage.db"
 log-path: "./logs/app.log"
+image:
+  save-path: "./assets/img"
+  wm-path: "./assets/watermark.png"
+  expansion: '.jpg'
+  compress-quality: 80
 http: 
   host: "0.0.0.0"
   port: 8080

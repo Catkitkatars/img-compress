@@ -17,6 +17,7 @@ type Config struct {
 	StoragePath string `yaml:"storage-path" env-required:"true"`
 	LogPath     string `yaml:"log-path" env-required:"true"`
 	HTTP        HTTP   `yaml:"http"`
+	Image       Image  `yaml:"image"`
 }
 
 type HTTP struct {
@@ -26,9 +27,12 @@ type HTTP struct {
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"30s"`
 }
 
-// TODO rules for image compression
-// type ImgRules struct {
-// }
+type Image struct {
+	SavePath        string `yaml:"save-path" env-required:"true"`
+	WmPath          string `yaml:"wm-path" env-required:"true"`
+	Expansion       string `yaml:"expansion" env-default:".jpg"`
+	CompressQuality int    `yaml:"compress-quality" env-default:"100"`
+}
 
 func Init() *Config {
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
