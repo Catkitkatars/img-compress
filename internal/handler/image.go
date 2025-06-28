@@ -118,10 +118,10 @@ func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _ = range files {
-		result := <-resultCh
-		results = append(results, result)
+		results = append(results, <-resultCh)
 	}
 
+	close(resultCh)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(results)
 }
