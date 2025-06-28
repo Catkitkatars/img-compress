@@ -5,7 +5,7 @@ An application written in Go for compressing images, converting them to JPEG, an
 
 ```bash
 
-git clone https://github.com/your-name/img-compress.git
+git clone https://github.com/Catkitkatars/img-compress.git
 docker compose up -d --build
 
 POST:
