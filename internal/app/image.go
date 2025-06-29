@@ -1,11 +1,17 @@
 package app
 
 import (
+	"fmt"
 	"github.com/disintegration/imaging"
 	"image"
+	"image/color"
 	"img-compress/internal/dto"
 	"img-compress/internal/storage"
 	"log/slog"
+	"mime/multipart"
+	"os"
+	"path/filepath"
+	"strings"
 )
 
 type Image struct {
@@ -17,29 +23,37 @@ func NewImage(imgAppDto *dto.Config) *Image {
 	return &Image{st: imgAppDto.Storage, logger: imgAppDto.Log}
 }
 
-func (i *Image) Get(id int) (string, error) {
-	m := "app.Image.GetImage"
+func (i *Image) Process(f multipart.File, header multipart.FileHeader) (string, error) {
+	name := strings.TrimSuffix(header.Filename, filepath.Ext(header.Filename))
 
-	res, err := i.st.GetImage(id)
-
+	srcImg, err := imaging.Decode(f)
 	if err != nil {
-		i.logger.Error(m, "failed to get image", slog.Int("id", id), slog.Any("error", err))
-		return "", err
+		// todo
+		// Шаблон декоратор/враппер
+		return "", fmt.Errorf("imaging.Decode: %w", err)
 	}
 
-	return res, nil
-}
-func (i *Image) Save(path string) (int, error) {
-	m := "app.Image.SaveImage"
+	bg := imaging.New(srcImg.Bounds().Dx(), srcImg.Bounds().Dy(), color.White)
+	img := imaging.Overlay(bg, srcImg, image.Pt(0, 0), 1.0)
 
-	id, err := i.st.SaveImage(path)
-
+	imgMarked, err := i.AddWaterMark(img, "assets/watermark.png")
 	if err != nil {
-		i.logger.Error(m, "failed to save image", slog.String("path", path), slog.Any("error", err))
-		return 0, err
+		return "", fmt.Errorf("image.AddWaterMark: %w", err)
 	}
 
-	return id, nil
+	outPath := "assets/img/" + name + ".jpg"
+	outFile, err := os.Create(outPath)
+	if err != nil {
+		return "", fmt.Errorf("os.Create: %w", err)
+	}
+	defer outFile.Close()
+
+	err = imaging.Encode(outFile, imgMarked, imaging.JPEG, imaging.JPEGQuality(30))
+	if err != nil {
+		return "", fmt.Errorf("imaging.Encode: %w", err)
+	}
+
+	return outPath, nil
 }
 
 func (i *Image) AddWaterMark(img image.Image, wmPath string) (image.Image, error) {

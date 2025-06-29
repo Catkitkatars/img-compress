@@ -81,3 +81,5 @@ time=2025-06-26T13:55:05.833Z level=INFO msg="wm is opened"
 time=2025-06-26T13:55:05.851Z level=INFO msg="resize is done"
 time=2025-06-26T14:20:20.567Z level=INFO msg="starting img-compress" env=local
 time=2025-06-26T14:40:32.263Z level=INFO msg="starting img-compress" env=local
+time=2025-06-28T19:46:07.606Z level=INFO msg="starting img-compress" env=local
+time=2025-06-28T19:47:04.761Z level=INFO msg="starting img-compress" env=local

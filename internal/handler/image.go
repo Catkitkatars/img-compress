@@ -2,12 +2,14 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/disintegration/imaging"
 	"github.com/go-chi/chi/v5"
 	"image"
 	"image/color"
 	"img-compress/internal/app"
 	"img-compress/internal/dto"
+	"img-compress/internal/storage"
 	"log/slog"
 	"mime/multipart"
 	"net/http"
@@ -18,22 +20,20 @@ import (
 )
 
 type ImageHandler struct {
-	Img       *app.Image
-	ConfigDto *dto.Config
-	Logger    *slog.Logger
+	store  *storage.Storage
+	Logger *slog.Logger
 }
 
 type FileResult struct {
 	Filename string `json:"filename"`
 	Status   string `json:"status"`
-	Error    string `json:"error,omitempty"`
+	Error    error  `json:"error,omitempty"`
 }
 
-func NewImageHandler(configDto *dto.Config, img *app.Image) *ImageHandler {
+func NewImageHandler() *ImageHandler {
+
 	return &ImageHandler{
-		Img:       img,
-		ConfigDto: configDto,
-		Logger:    configDto.Log,
+		Logger: configDto.Log,
 	}
 }
 
@@ -79,20 +79,20 @@ func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
 				resultCh <- FileResult{
 					Filename: header.Filename,
 					Status:   "error",
-					Error:    "не удалось открыть файл",
+					Error:    fmt.Errorf("header.Open: %w", err),
 				}
 				return
 			}
 
-			path, errorText := h.ProcessImage(file, *header)
+			path, processError := h.Img.Process(file, *header)
 			file.Close()
 
-			if errorText != "" {
-				h.Logger.Error(errorText, slog.String("filename", header.Filename), slog.Any("error", err))
+			if processError != nil {
+				h.Logger.Error("h.Img.Process: ", slog.String("filename", header.Filename), slog.Any("error", err))
 				resultCh <- FileResult{
 					Filename: header.Filename,
 					Status:   "error",
-					Error:    errorText,
+					Error:    processError,
 				}
 				return
 			}
@@ -104,7 +104,7 @@ func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
 				resultCh <- FileResult{
 					Filename: header.Filename,
 					Status:   "error",
-					Error:    "AddImages: Save image error",
+					Error:    fmt.Errorf("h.Img.Save: %w", saveErr),
 				}
 				return
 			}
@@ -124,35 +124,4 @@ func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
 	close(resultCh)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(results)
-}
-
-func (h *ImageHandler) ProcessImage(f multipart.File, header multipart.FileHeader) (string, string) {
-	name := strings.TrimSuffix(header.Filename, filepath.Ext(header.Filename))
-
-	srcImg, err := imaging.Decode(f)
-	if err != nil {
-		return "", "Не удалось декодировать изображение: " + err.Error()
-	}
-
-	bg := imaging.New(srcImg.Bounds().Dx(), srcImg.Bounds().Dy(), color.White)
-	img := imaging.Overlay(bg, srcImg, image.Pt(0, 0), 1.0)
-
-	imgMarked, err := h.Img.AddWaterMark(img, "assets/watermark.png")
-	if err != nil {
-		return "", "Не удалось добавить водяной знак: " + err.Error()
-	}
-
-	outPath := "assets/img/" + name + ".jpg"
-	outFile, err := os.Create(outPath)
-	if err != nil {
-		return "", "Не удалось создать файл для сохранения изображения: " + err.Error()
-	}
-	defer outFile.Close()
-
-	err = imaging.Encode(outFile, imgMarked, imaging.JPEG, imaging.JPEGQuality(30))
-	if err != nil {
-		return "", "Не удалось сохранить изображение: " + err.Error()
-	}
-
-	return outPath, ""
 }

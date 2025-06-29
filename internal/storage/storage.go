@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	"fmt"
+	slogger "img-compress/internal/logger"
 	"log/slog"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -20,20 +21,26 @@ type Storage struct {
 	logger *slog.Logger
 }
 
-func New(storagePath string, logger *slog.Logger) (*Storage, error) {
+var Store *Storage
+
+func New(storagePath string) error {
 	const fn = "storage.sqlite.New"
 
 	db, err := sql.Open("sqlite3", storagePath)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", fn, err)
+
+		return fmt.Errorf("%s: %w", fn, err)
 	}
 
-	s := &Storage{db: db, logger: logger}
-	if err := s.initSchema(); err != nil {
-		return nil, fmt.Errorf("%s: initSchema: %w", fn, err)
+	logger := slogger.Logger
+
+	Store := &Storage{db: db, logger: logger}
+
+	if err := Store.initSchema(); err != nil {
+		return fmt.Errorf("%s: initSchema: %w", fn, err)
 	}
 
-	return s, nil
+	return nil
 }
 
 func (s *Storage) initSchema() error {
@@ -86,26 +93,6 @@ func (s *Storage) GetImage(id int) (string, error) {
 	}
 	return path, nil
 }
-
-//func (s *Storage) GetAllImages() ([]string, error) {
-//	mt := "storage.sqlite.GetAllImages"
-//
-//	rows, err := s.db.Query(`SELECT path FROM images`)
-//	if err != nil {
-//		s.logger.Error(mt, "failed to get all images", slog.Any("error", err))
-//		return nil, err
-//	}
-//
-//	var images []string
-//	for rows.Next() {
-//		var path string
-//		if err := rows.Scan(&path); err != nil {
-//			return nil, err
-//		}
-//		images = append(images, path)
-//	}
-//	return images, nil
-//}
 
 func (s *Storage) Close() error {
 	return s.db.Close()

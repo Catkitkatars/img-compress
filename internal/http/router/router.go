@@ -11,7 +11,7 @@ const (
 	post = "POST"
 )
 
-func Init(imgHandler *handler.ImageHandler) *chi.Mux {
+func Init() *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Use(middleware.RequestID)
@@ -19,7 +19,7 @@ func Init(imgHandler *handler.ImageHandler) *chi.Mux {
 	router.Use(middleware.Recoverer)
 	router.Use(middleware.URLFormat)
 
-	routes := GetRoutes(imgHandler)
+	routes := GetRoutes()
 
 	for _, route := range routes {
 

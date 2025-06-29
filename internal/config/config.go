@@ -34,17 +34,15 @@ type Image struct {
 	CompressQuality int    `yaml:"compress-quality" env-default:"100"`
 }
 
-func Init() *Config {
+var Cfg Config
+
+func New() {
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
 		log.Fatalf("Config file - %s does not exist", configPath)
 	}
 
-	var cfg Config
-
-	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
+	if err := cleanenv.ReadConfig(configPath, &Cfg); err != nil {
 
 		log.Fatalf("Failed to read config file: %v", err)
 	}
-
-	return &cfg
 }
