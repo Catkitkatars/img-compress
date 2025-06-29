@@ -34,7 +34,7 @@ func New(storagePath string) error {
 
 	logger := slogger.Logger
 
-	Store := &Storage{db: db, logger: logger}
+	Store = &Storage{db: db, logger: logger}
 
 	if err := Store.initSchema(); err != nil {
 		return fmt.Errorf("%s: initSchema: %w", fn, err)

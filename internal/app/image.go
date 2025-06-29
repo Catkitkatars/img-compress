@@ -5,8 +5,7 @@ import (
 	"github.com/disintegration/imaging"
 	"image"
 	"image/color"
-	"img-compress/internal/dto"
-	"img-compress/internal/storage"
+	"img-compress/internal/logger"
 	"log/slog"
 	"mime/multipart"
 	"os"
@@ -15,12 +14,11 @@ import (
 )
 
 type Image struct {
-	st     *storage.Storage
 	logger *slog.Logger
 }
 
-func NewImage(imgAppDto *dto.Config) *Image {
-	return &Image{st: imgAppDto.Storage, logger: imgAppDto.Log}
+func NewImage() *Image {
+	return &Image{logger: logger.Logger}
 }
 
 func (i *Image) Process(f multipart.File, header multipart.FileHeader) (string, error) {

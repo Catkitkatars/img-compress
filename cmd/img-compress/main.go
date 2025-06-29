@@ -1,14 +1,11 @@
 package main
 
 import (
-	"img-compress/internal/app"
 	"img-compress/internal/config"
-	"img-compress/internal/handler"
 	srv "img-compress/internal/http"
 	slogger "img-compress/internal/logger"
 	"img-compress/internal/storage"
 	"log"
-	"log/slog"
 	"os"
 )
 
@@ -19,15 +16,17 @@ func main() {
 	logFile, err := os.OpenFile(cfg.LogPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 
 	if err != nil {
-		log.Fatalf("не удалось открыть лог-файл: %v", err)
+		log.Fatalf("fail to opened log file: %v", err)
 	}
 
 	slogger.New(logFile)
 	logger := slogger.Logger
 
-	logger.Info("starting img-compress", slog.String("env", cfg.Env))
+	logger.Info("starting img-compress")
 
 	storeErr := storage.New(cfg.StoragePath)
+
+	logger.Info("storage start")
 
 	if storeErr != nil {
 		logger.Error("failed to initialize storage", err)

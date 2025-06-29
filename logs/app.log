@@ -83,3 +83,12 @@ time=2025-06-26T14:20:20.567Z level=INFO msg="starting img-compress" env=local
 time=2025-06-26T14:40:32.263Z level=INFO msg="starting img-compress" env=local
 time=2025-06-28T19:46:07.606Z level=INFO msg="starting img-compress" env=local
 time=2025-06-28T19:47:04.761Z level=INFO msg="starting img-compress" env=local
+time=2025-06-29T12:35:42.431Z level=INFO msg="starting img-compress"
+time=2025-06-29T12:39:15.760Z level=INFO msg="starting img-compress"
+time=2025-06-29T12:41:23.515Z level=INFO msg="starting img-compress"
+time=2025-06-29T12:42:21.615Z level=INFO msg="starting img-compress"
+time=2025-06-29T12:42:21.620Z level=INFO msg="storage start"
+time=2025-06-29T12:42:21.620Z level=INFO msg="server start"
+time=2025-06-29T12:48:04.487Z level=INFO msg="starting img-compress"
+time=2025-06-29T12:48:04.511Z level=INFO msg="storage start"
+time=2025-06-29T12:48:04.512Z level=INFO msg="server start"

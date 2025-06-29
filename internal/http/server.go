@@ -3,6 +3,7 @@ package http
 import (
 	"img-compress/internal/config"
 	"img-compress/internal/http/router"
+	logs "img-compress/internal/logger"
 	"net/http"
 )
 
@@ -18,6 +19,7 @@ func Start() error {
 		IdleTimeout:  cfg.HTTP.IdleTimeout,
 	}
 
+	logs.Logger.Info("server start")
 	err := srv.ListenAndServe()
 
 	return err

@@ -1,27 +1,21 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/disintegration/imaging"
 	"github.com/go-chi/chi/v5"
-	"image"
-	"image/color"
 	"img-compress/internal/app"
-	"img-compress/internal/dto"
+	"img-compress/internal/logger"
 	"img-compress/internal/storage"
 	"log/slog"
 	"mime/multipart"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strconv"
-	"strings"
 )
 
 type ImageHandler struct {
-	store  *storage.Storage
+	Store  *storage.Storage
 	Logger *slog.Logger
+	Image  *app.Image
 }
 
 type FileResult struct {
@@ -31,43 +25,38 @@ type FileResult struct {
 }
 
 func NewImageHandler() *ImageHandler {
-
 	return &ImageHandler{
-		Logger: configDto.Log,
+		Store:  storage.Store,
+		Logger: logger.Logger,
+		Image:  app.NewImage(),
 	}
 }
 
-func (h *ImageHandler) GetImage(w http.ResponseWriter, r *http.Request) {
+func (h *ImageHandler) GetImage(r *http.Request) (any, error) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 
 	if err != nil {
-		h.Logger.Error("GetImage: Invalid ID format", slog.Any("error", err))
-		http.Error(w, "Invalid ID format", http.StatusBadRequest)
-		return
+		return "", fmt.Errorf("strconv.Atoi: %w", err)
 	}
 
-	path, err := h.Img.Get(id)
+	path, err := h.Store.GetImage(id)
 
 	if err != nil {
-		h.Logger.Error("GetImage: Get image error", slog.Any("error", err))
-		http.Error(w, "Img with id:"+strconv.Itoa(id)+" not found", http.StatusBadRequest)
-		return
+		return "", fmt.Errorf("h.Store.GetImage: %w", err)
 	}
 
-	w.Write([]byte("GET img path: " + path))
+	return path, nil
 }
 
-func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
+func (h *ImageHandler) AddImages(r *http.Request) (any, error) {
 	var results []FileResult
 	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
-		http.Error(w, "Не удалось распарсить multipart-форму", http.StatusBadRequest)
-		return
+		return results, err
 	}
 	files := r.MultipartForm.File["img"]
 	if len(files) == 0 {
-		http.Error(w, "Файлы не найдены", http.StatusBadRequest)
-		return
+		return results, fmt.Errorf("files not found")
 	}
 
 	resultCh := make(chan FileResult)
@@ -76,6 +65,7 @@ func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
 		go func(header *multipart.FileHeader) {
 			file, err := header.Open()
 			if err != nil {
+				h.Logger.Error("header.Open: ", slog.String("filename", header.Filename), slog.Any("error", err))
 				resultCh <- FileResult{
 					Filename: header.Filename,
 					Status:   "error",
@@ -84,7 +74,7 @@ func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			path, processError := h.Img.Process(file, *header)
+			path, processError := h.Image.Process(file, *header)
 			file.Close()
 
 			if processError != nil {
@@ -97,7 +87,7 @@ func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			_, saveErr := h.Img.Save(path)
+			_, saveErr := h.Store.SaveImage(path)
 
 			if saveErr != nil {
 				h.Logger.Error("AddImages: Save image error", slog.String("path", path), slog.Any("error", err))
@@ -122,6 +112,5 @@ func (h *ImageHandler) AddImages(w http.ResponseWriter, r *http.Request) {
 	}
 
 	close(resultCh)
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(results)
+	return results, nil
 }
